@@ -40,7 +40,8 @@ async fn main_loop() -> Result<()> {
 
         // commands.push(BusRequest::GetCurrentThroughput);
         // commands.push(BusRequest::GetHostCounter);
-        commands.push(BusRequest::GetLongTermStats(StatsRequest::AllHosts));
+        // commands.push(BusRequest::GetLongTermStats(StatsRequest::AllHosts));
+        commands.push(BusRequest::GetAllCircuits);
 
         // Send the requests and process replies
         for response in bus_client.request(commands).await? {
@@ -54,12 +55,15 @@ async fn main_loop() -> Result<()> {
                 BusResponse::LongTermHosts { .. } => {
                     println!("Long Term Hosts: {:?}",response)
                 }
+                BusResponse::CircuitData { .. } => {
+                    println!("Circuits: {:?}", response)
+                }
                 _ => {}
             }
         }
 
 
-        println!("hello again {:?} / {:?}",RAM_USED,TOTAL_RAM);
+        // println!("hello again {:?} / {:?}",RAM_USED,TOTAL_RAM);
 
         // // Check if we should be quitting
         if SHOULD_EXIT.load(Ordering::Relaxed) {
