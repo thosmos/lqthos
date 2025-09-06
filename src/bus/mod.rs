@@ -56,7 +56,7 @@ async fn main_loop() -> Result<()> {
                     println!("Long Term Hosts: {:?}",response)
                 }
                 BusResponse::CircuitData { .. } => {
-                    println!("Circuits: {:?}", response);
+                    // println!("Circuits: {:?}", response);
                     if let BusResponse::CircuitData(circuits) = response {
                         for circuit in circuits {
                             if circuit.ip == Ipv4Addr::new(10,38,0,14) {
