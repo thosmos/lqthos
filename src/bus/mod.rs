@@ -3,12 +3,8 @@
 use crate::bus::cpu_ram::{RAM_USED, SHOULD_EXIT, TOTAL_RAM};
 use anyhow::Result;
 use lqos_bus::{LibreqosBusClient, BusRequest, BusResponse};
-use tokio::sync::mpsc::Receiver;
 pub mod cpu_ram;
-use std::{
-    io::stdout,
-    sync::atomic::{AtomicBool, Ordering},
-};
+use std::sync::atomic::Ordering;
 
 
 /// The main loop for the bus.

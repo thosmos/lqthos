@@ -5,9 +5,6 @@ use anyhow::Result;
 
 use crate::bus::cpu_ram::SHOULD_EXIT;
 
-
-
-
 fn main() -> Result<()> {
 
     println!("hi");
