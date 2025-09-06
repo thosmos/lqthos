@@ -34,12 +34,16 @@ async fn main_loop() -> Result<()> {
         let mut commands: Vec<BusRequest> = Vec::new();
 
         commands.push(BusRequest::GetCurrentThroughput);
+        commands.push(BusRequest::GetHostCounter);
 
         // Send the requests and process replies
         for response in bus_client.request(commands).await? {
             match response {
                 BusResponse::CurrentThroughput { .. } => {
                     println!("CurrentThroughput response: {:?}",response)
+                }
+                BusResponse::HostCounters { .. } => {
+                    println!("Host counters: {:?}",response)
                 }
                 _ => {}
             }
