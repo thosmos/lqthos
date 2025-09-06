@@ -2,7 +2,7 @@
 
 use crate::bus::cpu_ram::{RAM_USED, SHOULD_EXIT, TOTAL_RAM};
 use anyhow::Result;
-use lqos_bus::{LibreqosBusClient, BusRequest, BusResponse};
+use lqos_bus::{BusRequest, BusResponse, LibreqosBusClient, StatsRequest};
 pub mod cpu_ram;
 use std::sync::atomic::Ordering;
 
@@ -30,11 +30,17 @@ async fn main_loop() -> Result<()> {
 
     loop {
 
+        // // Check if we should be quitting
+        if SHOULD_EXIT.load(Ordering::Relaxed) {
+            break;
+        }
+
         // Perform actual bus collection
         let mut commands: Vec<BusRequest> = Vec::new();
 
-        commands.push(BusRequest::GetCurrentThroughput);
-        commands.push(BusRequest::GetHostCounter);
+        // commands.push(BusRequest::GetCurrentThroughput);
+        // commands.push(BusRequest::GetHostCounter);
+        commands.push(BusRequest::GetLongTermStats(StatsRequest::AllHosts));
 
         // Send the requests and process replies
         for response in bus_client.request(commands).await? {
@@ -45,19 +51,25 @@ async fn main_loop() -> Result<()> {
                 BusResponse::HostCounters { .. } => {
                     println!("Host counters: {:?}",response)
                 }
+                BusResponse::LongTermHosts { .. } => {
+                    println!("Long Term Hosts: {:?}",response)
+                }
                 _ => {}
             }
         }
+
+
+        println!("hello again {:?} / {:?}",RAM_USED,TOTAL_RAM);
 
         // // Check if we should be quitting
         if SHOULD_EXIT.load(Ordering::Relaxed) {
             break;
         }
 
-        println!("hello again {:?} / {:?}",RAM_USED,TOTAL_RAM);
-
         // Sleep for one tick
-        tokio::time::sleep(std::time::Duration::from_millis(1000)).await;
+        tokio::time::sleep(std::time::Duration::from_millis(3000)).await;
+
+
     }
     println!("bye main_loop");
 
